@@ -20,9 +20,9 @@ async function login(e) {
 
     document.getElementById('message').innerText=response.data.msg;
 
-     localStorage.setItem('token',response.data.token)
+      localStorage.setItem('token',response.data.token)
 
-    //  if(response){location.href = 'home.html';}
+     if(response){location.href = 'home.html';}
 
 
     document.getElementById("item1").value = "";
