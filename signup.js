@@ -18,7 +18,7 @@ async function addItem(e) {
     const data = {
       name: newItem1,
       email: newItem2,
-      email: newItem3,
+      phone: newItem3,
       password: newItem4,
     };
 
@@ -35,6 +35,7 @@ async function addItem(e) {
     document.getElementById("item1").value = "";
     document.getElementById("item2").value = "";
     document.getElementById("item3").value = "";
+    document.getElementById("item4").value = "";
     }
    
   } catch (error) {
