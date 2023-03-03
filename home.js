@@ -1,18 +1,19 @@
+ window.addEventListener("load", getMessages);
 
-// window.addEventListener("load", showUsers);
+async function getMessages() {
+  try {
 
-// async function showUsers() {
-//   try {
+    const response = await axios.get("http://localhost:3000/chat/getmessage", {
+      headers: { Authorization: localStorage.getItem("token") },
+    });
 
-//     const response = await axios.get("http://localhost:3000/home/users", {
-//       headers: { Authorization: localStorage.getItem("token") },
-//     });
-
-//     console.log(response.data);
-//   } catch (error) {
-//     console.error(error);
-//   }
-// }
+    
+    console.log(response.data);
+    console.log("////////////////////////",response.data[1].id);
+  } catch (error) {
+    console.error(error);
+  }
+}
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
