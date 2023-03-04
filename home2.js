@@ -51,19 +51,31 @@ window.addEventListener("load", getMessages);
 
 async function getMessages() {
   try {
-
-    const response = await axios.get("http://localhost:3000/chat/getmessage", {
+    // chats = localStorage.getItem("chats")
+    chats = JSON.parse(localStorage.getItem("chats"))
+    chats===null?id=-1:id=chats[chats.length-1].id
+    const response = await axios.get(`http://localhost:3000/chat/getmessage/${id}`, {
       headers: { Authorization: localStorage.getItem("token") },
     });
+    if(chats!=null){
+     chats=chats.concat(response.data)
+    }
+    else{
+        chats=response.data
+    }
 
-    console.log(response.data);
-    console.log("////////////////////////",response.data[1]);
-    previousMessages=response.data
+    previousMessages=chats
+
+
+
+    console.log(response.data,'///////////////////////////////////');
+    localStorage.setItem("chats",JSON.stringify(chats))    
     const user = parseJwt(localStorage.getItem('token'))
+    // localStorage.setItem("chats",response.data)
     console.log(user)
     msgerChat.innerHTML=" " 
     for(i in previousMessages){
-         dateTime = new Date(response.data[i].createdAt)
+         dateTime = new Date(previousMessages[i].createdAt)
 
         console.log(previousMessages[i])
         if(previousMessages[i].userId==user.id){
