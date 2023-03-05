@@ -50,6 +50,11 @@ body {
   color: #666;
 }
 
+.msger-header-title {
+  cursor: pointer;
+
+}
+
 .msger-chat {
   flex: 1;
   overflow-y: auto;

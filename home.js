@@ -1,4 +1,4 @@
-var itemList = document.getElementById("items");
+var itemList = document.getElementById("items")
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 window.addEventListener("load", getGroups);
@@ -55,10 +55,13 @@ async function selectItem(e) {
       console.log(1);
       console.log(sp);
       console.log( sp.innerHTML);
+      btn.removeChild(sp)
+      console.log( btn.innerHTML);
 
       console.log(typeof sp.innerHTML);
 
       localStorage.setItem("group",parseInt(sp.innerHTML))
+      localStorage.setItem("groupName",btn.innerHTML)
       localStorage.setItem("chats",null)
       location.href = 'home2.html';
 

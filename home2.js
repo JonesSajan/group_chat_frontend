@@ -1,6 +1,7 @@
 const msgerForm = get(".msger-inputarea");
 const msgerInput = get(".msger-input");
 const msgerChat = get(".msger-chat");
+const msgerHead = get(".msger-header-title");
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -58,6 +59,8 @@ async function getMessages() {
     const response = await axios.get(`http://localhost:3000/chat/getmessage/{"id":${id},"groupid":${groupid}}`, {
       headers: { Authorization: localStorage.getItem("token") },
     });
+    msgerHead.innerText=`${localStorage.getItem("groupName")}`
+    console.log(localStorage.getItem("groupName"))
     console.log(response.data.length!=0)
   if(response.data.length!=0){
     if(chats!=null){
@@ -148,5 +151,12 @@ function parseJwt (token) {
   
   
     }
+  }
+
+  /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  msgerHead.addEventListener("click",groupMembers)
+
+  async function groupMembers(){
+    location.href="./groupmembers.html"
   }
   
