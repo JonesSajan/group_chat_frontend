@@ -54,24 +54,28 @@ async function getMessages() {
     // chats = localStorage.getItem("chats")
     chats = JSON.parse(localStorage.getItem("chats"))
     chats===null?id=-1:id=chats[chats.length-1].id
-    const response = await axios.get(`http://localhost:3000/chat/getmessage/${id}`, {
+    groupid=localStorage.getItem("group")
+    const response = await axios.get(`http://localhost:3000/chat/getmessage/{"id":${id},"groupid":${groupid}}`, {
       headers: { Authorization: localStorage.getItem("token") },
     });
+    console.log(response.data.length!=0)
+  if(response.data.length!=0){
     if(chats!=null){
      chats=chats.concat(response.data)
+     
     }
     else{
         chats=response.data
     }
+  }
 
     previousMessages=chats
 
 
 
     console.log(response.data,'///////////////////////////////////');
-    localStorage.setItem("chats",JSON.stringify(chats))    
     const user = parseJwt(localStorage.getItem('token'))
-    // localStorage.setItem("chats",response.data)
+    localStorage.setItem("chats",JSON.stringify(chats))
     console.log(user)
     msgerChat.innerHTML=" " 
     for(i in previousMessages){
@@ -115,12 +119,15 @@ function parseJwt (token) {
       var newItem1 = msgerInput.value
       const data = {
         message: newItem1,
+        groupid:localStorage.getItem("group"),
       };
+
+      console.log("????????????????????????????????????????????",data)
   
   
       const response = await axios.post(
         "http://localhost:3000/chat/sendmessage",
-        data,
+       data,
         { headers: { Authorization: localStorage.getItem("token") } }
       );
       console.log(response)

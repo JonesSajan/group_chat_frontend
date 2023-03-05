@@ -22,7 +22,7 @@ async function login(e) {
 
       localStorage.setItem('token',response.data.token)
 
-     if(response){location.href = 'home2.html';}
+     if(response){location.href = 'home.html';}
 
 
     document.getElementById("item1").value = "";
