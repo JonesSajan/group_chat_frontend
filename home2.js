@@ -1,12 +1,17 @@
 const msgerForm = get(".msger-inputarea");
- import { io } from "https://cdn.socket.io/4.4.1/socket.io.esm.min.js";
 const msgerInput = get(".msger-input");
 const msgerChat = get(".msger-chat");
 const msgerHead = get(".msger-header-title");
 const socket = io('http://localhost:3001')
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-socket.on('connection', () => {
+socket.on('connect', () => {
 console.log("conected with socket")
+socket.emit("create-room",parseJwt(localStorage.getItem("group")).id)
+socket.on("receive-message",(message,token)=>{
+  user=parseJwt(token)
+  appendMessage(user.name, PERSON_IMG, "left", message,new Date());
+
+})
 })
 
 
@@ -68,7 +73,7 @@ function formatDate(date) {
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 window.addEventListener("load", getMessages);
- setInterval(() =>getMessages(), 10000)
+//  setInterval(() =>getMessages(), 10000)
 
 async function getMessages() {
   try {
@@ -129,27 +134,36 @@ async function getMessages() {
 
 
       var newItem1 = msgerInput.value
-      const data = {
-        message: newItem1,
-        groupid:parseJwt(localStorage.getItem("group")).id,
-      };
+      const user = parseJwt(localStorage.getItem('token'))
 
-      console.log("????????????????????????????????????????????",data)
+
+      parseJwt(localStorage.getItem("group"))
+      socket.emit("send-message",newItem1,localStorage.getItem("token"))
+      appendMessage(user.name, PERSON_IMG, "right", newItem1,new Date);
+
+
+      
+      // const data = {
+      //   message: newItem1,
+      //   groupid:parseJwt(localStorage.getItem("group")).id,
+      // };
+
+      // console.log("????????????????????????????????????????????",data)
   
   
-      const response = await axios.post(
-        "http://localhost:3000/chat/sendmessage",
-       data,
-        { headers: { Authorization: localStorage.getItem("token") } }
-      );
-      console.log(response)
+      // const response = await axios.post(
+      //   "http://localhost:3000/chat/sendmessage",
+      //  data,
+      //   { headers: { Authorization: localStorage.getItem("token") } }
+      // );
+      // console.log(response)
   
   
   
   
   
       msgerInput.value = "";
-      getMessages()
+      // getMessages()
   
   
     } catch (error) {
