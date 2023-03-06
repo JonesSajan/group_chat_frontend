@@ -6,13 +6,25 @@ let users = []
 var group 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+function parseJwt (token) {
+    var base64Url = token.split('.')[1];
+    var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    var jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function(c) {
+        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+    }).join(''));
+  
+    return JSON.parse(jsonPayload);
+  }
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  
 window.addEventListener("load", addItem);
 
 async function addItem(e) {
   try {
     e.preventDefault();
 
-    group = localStorage.getItem("groupName");
+    group = parseJwt(localStorage.getItem("group")).name;
    
    
     document.getElementById("form").innerHTML = `<h4>Members of ${group}- </h4>`;
@@ -32,7 +44,7 @@ async function addItem(e) {
 async function showI() {
     try {
   
-      const response = await axios.get(`http://localhost:3000/group/users/${localStorage.getItem('group')}`,{ headers: { Authorization: localStorage.getItem("token") } });
+      const response = await axios.get(`http://localhost:3000/group/users/${parseJwt(localStorage.getItem('group')).id}`,{ headers: { Authorization: localStorage.getItem("token") } });
       console.log(response.data);
       showOutput(response.data);
     } catch (error) {
@@ -117,7 +129,7 @@ async function selectItem(e) {
    try {
 
     const data = {
-      groupid:localStorage.getItem("group"),
+      groupid:parseJwt(localStorage.getItem("group")).id,
       users:users
     };
 

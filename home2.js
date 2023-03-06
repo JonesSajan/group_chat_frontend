@@ -1,7 +1,15 @@
 const msgerForm = get(".msger-inputarea");
+ import { io } from "https://cdn.socket.io/4.4.1/socket.io.esm.min.js";
 const msgerInput = get(".msger-input");
 const msgerChat = get(".msger-chat");
 const msgerHead = get(".msger-header-title");
+const socket = io('http://localhost:3001')
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+socket.on('connection', () => {
+console.log("conected with socket")
+})
+
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -9,6 +17,18 @@ const PERSON2_IMG = "https://image.flaticon.com/icons/svg/327/327779.svg";
 const PERSON_IMG = "https://image.flaticon.com/icons/svg/145/145867.svg";
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+function parseJwt (token) {
+  var base64Url = token.split('.')[1];
+  var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+  var jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function(c) {
+      return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+  }).join(''));
+
+  return JSON.parse(jsonPayload);
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 
 function appendMessage(name, img, side, text,date) {
     // msgerChat.innerHTML="" 
@@ -55,12 +75,11 @@ async function getMessages() {
     // chats = localStorage.getItem("chats")
     chats = JSON.parse(localStorage.getItem("chats"))
     chats===null?id=-1:id=chats[chats.length-1].id
-    groupid=localStorage.getItem("group")
+    groupid=parseJwt(localStorage.getItem("group")).id
     const response = await axios.get(`http://localhost:3000/chat/getmessage/{"id":${id},"groupid":${groupid}}`, {
       headers: { Authorization: localStorage.getItem("token") },
     });
-    msgerHead.innerText=`${localStorage.getItem("groupName")}`
-    console.log(localStorage.getItem("groupName"))
+    msgerHead.innerText=`${parseJwt(localStorage.getItem("group")).name}`
     console.log(response.data.length!=0)
   if(response.data.length!=0){
     if(chats!=null){
@@ -97,16 +116,6 @@ async function getMessages() {
   }
 }
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-function parseJwt (token) {
-    var base64Url = token.split('.')[1];
-    var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-    var jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function(c) {
-        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-    }).join(''));
-  
-    return JSON.parse(jsonPayload);
-  }
-  //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   
   msgerForm.addEventListener("submit", event => {sendMessage()});
 
@@ -122,7 +131,7 @@ function parseJwt (token) {
       var newItem1 = msgerInput.value
       const data = {
         message: newItem1,
-        groupid:localStorage.getItem("group"),
+        groupid:parseJwt(localStorage.getItem("group")).id,
       };
 
       console.log("????????????????????????????????????????????",data)

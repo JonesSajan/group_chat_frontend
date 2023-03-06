@@ -44,9 +44,9 @@ async function getGroups() {
   }
 
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-  itemList.addEventListener("click", selectItem);
+  itemList.addEventListener("click", getGroupToken);
 
-async function selectItem(e) {
+async function getGroupToken(e) {
   try {
     if (e.target.classList.contains("list")) {
       let btn =e.target
@@ -55,13 +55,29 @@ async function selectItem(e) {
       console.log(1);
       console.log(sp);
       console.log( sp.innerHTML);
+
+
+      const data = {
+        groupid:parseInt(sp.innerHTML),
+      };
+  
+  
+      const response = await axios.post(
+        "http://localhost:3000/group/getgrouptoken",
+        data,
+        { headers: { Authorization: localStorage.getItem("token") } }
+      );
+
+
+      console.log(response.data);
+
+
       btn.removeChild(sp)
       console.log( btn.innerHTML);
 
       console.log(typeof sp.innerHTML);
 
-      localStorage.setItem("group",parseInt(sp.innerHTML))
-      localStorage.setItem("groupName",btn.innerHTML)
+      localStorage.setItem("group",response.data)
       localStorage.setItem("chats",null)
       location.href = 'home2.html';
 
